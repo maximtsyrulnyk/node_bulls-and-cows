@@ -1,17 +1,33 @@
+'use strict';
+
 /**
- * @param {string} userInput
- * @returns {boolean}
+ * Checks that the user input is valid.
+ * Valid user input is a 4-digit number that does not start with 0
+ * and does not contain any duplicate digits.
+ *
+ * @param {string} userInput - The user input
+ * @return {boolean} - True if the user input is valid, false otherwise
  */
 function checkIsValidUserInput(userInput) {
-  const fourDigitsRegex = /^[0-9]{4}$/;
+  const input = userInput;
 
-  // Перевіряємо оригінальний рядок, а не число,
-  // щоб не втратити нуль на початку (наприклад '0123')
-  if (!fourDigitsRegex.test(userInput)) {
+  if (input.length !== 4) {
+    return false;
+  }
+
+  if (!/^\d+$/.test(input) || input[0] === '0') {
+    return false;
+  }
+
+  const unique = new Set(input);
+
+  if (unique.size !== 4) {
     return false;
   }
 
   return true;
 }
 
-module.exports = checkIsValidUserInput;
+module.exports = {
+  checkIsValidUserInput,
+};

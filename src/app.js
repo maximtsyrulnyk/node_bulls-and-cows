@@ -1,33 +1,39 @@
-const readline = require('readline-sync');
-const { generateSecretNumber } = require('./modules/generateSecretNumber');
-const checkIsValidUserInput = require('./modules/checkIsValidUserInput');
-const { checkIsRepeated } = require('./modules/checkIsRepeated');
+/* eslint-disable no-console */
+'use strict';
+
+const readline = require('readline');
+
+const { generateRandomNumber } = require('./modules/generateRandomNumber');
+const { checkIsValidUserInput } = require('./modules/checkIsValidUserInput');
 const { getBullsAndCows } = require('./modules/getBullsAndCows');
 
-function startGame() {
-  const secret = generateSecretNumber();
-  let isGuessed = false;
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-  // console.log('Welcome to Bulls and Cows!');
+const numberToGuess = generateRandomNumber();
 
-  while (!isGuessed) {
-    const input = readline.question('Enter your 4-digit guess: ');
+const askGuess = () => {
+  rl.question('Enter your guess (4-digit number): ', (userInput) => {
+    if (!checkIsValidUserInput(userInput)) {
+      console.log('Invalid input. Please enter a 4-digit valid number.');
 
-    if (!checkIsValidUserInput(input) || checkIsRepeated(input)) {
-      // eslint-disable-next-line
-      console.error('Error: input must be a 4-digit number with unique digits.');
-      continue;
+      return askGuess();
     }
 
-    const { bulls } = getBullsAndCows(secret, input);
+    const { bulls, cows } = getBullsAndCows(Number(userInput), numberToGuess);
 
     if (bulls === 4) {
-      // console.log(`Congratulations! You guessed the number: ${secret}`);
-      isGuessed = true;
+      console.log(
+        `Congratulations! You've guessed the number ${numberToGuess} correctly!`,
+      );
+      rl.close();
     } else {
-      // console.log(`Bulls: ${bulls}, Cows: ${cows}`);
+      console.log(`Bulls: ${bulls}, Cows: ${cows}`);
+      askGuess();
     }
-  }
-}
+  });
+};
 
-startGame();
+askGuess();
