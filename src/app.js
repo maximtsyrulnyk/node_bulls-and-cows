@@ -1,48 +1,31 @@
-'use strict';
-
-const readline = require('node:readline');
-
-const { generateRandomNumber } = require('./modules/generateRandomNumber');
-const { checkIsValidUserInput } = require('./modules/checkIsValidUserInput');
+const readline = require('readline-sync');
+const { generateSecretNumber } = require('./modules/generateSecretNumber');
+const checkIsValidUserInput = require('./modules/checkIsValidUserInput');
+const { checkIsRepeated } = require('./modules/checkIsRepeated');
 const { getBullsAndCows } = require('./modules/getBullsAndCows');
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+function startGame() {
+  const secret = generateSecretNumber();
+  let isGuessed = false;
 
-const numberToGuess = generateRandomNumber();
+  while (!isGuessed) {
+    const input = readline.question('Enter your 4-digit guess: ');
 
-function playGame() {
-  rl.question('Guess the number: ', (userInput) => {
-    if (!checkIsValidUserInput(userInput)) {
+    if (!checkIsValidUserInput(input) || checkIsRepeated(input)) {
       // eslint-disable-next-line
-      console.error('Input value is not correct');
-      // eslint-disable-next-line
-      console.error('Possibly not a number,');
-      // eslint-disable-next-line
-      console.error('or contains not 4-digit number or digits are repeated)');
-      // eslint-disable-next-line
-      console.error('or digits are repeated)');
-
-      playGame();
-    } else {
-      const bullsAndCows = getBullsAndCows(userInput, numberToGuess);
-
-      // eslint-disable-next-line
-      console.log(bullsAndCows);
-
-      if (+userInput === numberToGuess) {
-        // eslint-disable-next-line
-        console.log('You win!');
-        rl.close();
-      } else {
-        // eslint-disable-next-line
-        console.log('Incorrect number!\nTry again');
-        playGame();
-      }
+      console.error(
+        'Error: input must be a 4-digit number with unique digits.',
+      );
+      continue;
     }
-  });
+
+    const { bulls } = getBullsAndCows(secret, input);
+
+    if (bulls === 4) {
+      isGuessed = true;
+    } else {
+    }
+  }
 }
 
-playGame();
+startGame();

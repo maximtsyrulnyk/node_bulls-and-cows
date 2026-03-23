@@ -1,51 +1,34 @@
-'use strict';
-
 /**
- * Calculate the number of bulls and cows for a given user input.
- * Bulls are digits that are in the correct position.
- * Cows are digits that are in the wrong position.
- * Assume that the user input and the number to guess
- * are always 4-digit numbers.
- *
- * @param {number} userInput - The user input
- * @param {number} numberToGuess - The number to guess
- * @return {object} An object containing the number of bulls and cows.
- * Example: { bulls: 1, cows: 2 }
+ * @param {string} itemToCheck
+ * @param {number} index
+ * @param {string} wholeNumber
+ * @returns {boolean}
  */
-
 function checkIsBull(itemToCheck, index, wholeNumber) {
   const wholeNumberDigits = wholeNumber.split('');
 
   if (wholeNumberDigits[index] === itemToCheck) {
     return true;
   }
+
+  return false;
 }
 
-function getBullsAndCows(userInput, numberToGuess) {
-  let bullsAmount = 0;
-  let cowsAmount = 0;
+function getBullsAndCows(secret, guess) {
+  let bulls = 0;
+  let cows = 0;
+  const secretArray = secret.split('');
+  const guessArray = guess.split('');
 
-  const userInputStrChars = userInput.toString().split('');
-  const numberToGuessStr = numberToGuess.toString();
-
-  userInputStrChars.forEach((item, index) => {
-    if (numberToGuessStr.includes(item)) {
-      const isBull = checkIsBull(item, index, numberToGuessStr);
-
-      if (isBull) {
-        bullsAmount++;
-      } else {
-        cowsAmount++;
-      }
+  guessArray.forEach((digit, index) => {
+    if (checkIsBull(digit, index, secret)) {
+      bulls++;
+    } else if (secretArray.includes(digit)) {
+      cows++;
     }
   });
 
-  return {
-    bulls: bullsAmount,
-    cows: cowsAmount,
-  };
+  return { bulls, cows };
 }
 
-module.exports = {
-  getBullsAndCows,
-};
+module.exports = { getBullsAndCows };
